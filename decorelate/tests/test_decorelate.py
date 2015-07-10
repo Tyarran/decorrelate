@@ -4,12 +4,14 @@ import pytest
 @pytest.fixture
 def clean_registry():
     import decorelate
+    registry = decorelate.get_registry()
 
-    decorelate.registry.registered = []
+    registry.registered = []
 
 
 def test_register(clean_registry):
     import decorelate
+    registry = decorelate.get_registry()
 
     def func():
         pass
@@ -19,11 +21,27 @@ def test_register(clean_registry):
 
     decorelate.register(func, callback)
 
-    assert len(decorelate.registry) == 1
+    assert len(registry) == 1
+
+
+def test_register_with_category(clean_registry):
+    import decorelate
+    registry = decorelate.get_registry()
+
+    def func():
+        pass
+
+    def callback():
+        pass
+
+    decorelate.register(func, callback, category='test_category')
+
+    assert len(registry) == 1
 
 
 def test_original(clean_registry):
     import decorelate
+    registry = decorelate.get_registry()
 
     def decorator(wrapped):
         def callback(callable):
@@ -37,11 +55,12 @@ def test_original(clean_registry):
         pass
 
     assert hasattr(test_func, 'wrapped') is False
-    assert len(decorelate.registry) == 1
+    assert len(registry) == 1
 
 
 def test_start(clean_registry):
     import decorelate
+    registry = decorelate.get_registry()
 
     def decorator(wrapped):
         def callback(callable):
@@ -55,16 +74,17 @@ def test_start(clean_registry):
         pass
 
     assert hasattr(test_func, 'wrapped') is False
-    assert len(decorelate.registry) == 1
+    assert len(registry) == 1
 
     decorelate.start()
 
     assert hasattr(test_func, 'wrapped')
-    assert len(decorelate.registry) == 0
+    assert len(registry) == 0
 
 
 def test_start_decorator_with_parameter(clean_registry):
     import decorelate
+    registry = decorelate.get_registry()
 
     def decorator(value, **kwargs):
         def wrapper(wrapped):
@@ -87,7 +107,7 @@ def test_start_decorator_with_parameter(clean_registry):
     assert hasattr(test_func, 'one') is False
     assert hasattr(test_func, 'two') is False
     assert hasattr(test_func, 'three') is False
-    assert len(decorelate.registry) == 1
+    assert len(registry) == 1
 
     decorelate.start()
 
@@ -100,4 +120,11 @@ def test_start_decorator_with_parameter(clean_registry):
     assert test_func.two == 2
     assert hasattr(test_func, 'three')
     assert test_func.three == 3
-    assert len(decorelate.registry) == 0
+    assert len(registry) == 0
+
+
+def test_singleton(clean_registry):
+    import decorelate
+
+    assert decorelate.get_registry() == decorelate.get_registry()
+    assert id(decorelate.get_registry()) == id(decorelate.get_registry())
