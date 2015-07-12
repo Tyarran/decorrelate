@@ -3,15 +3,15 @@ import pytest
 
 @pytest.fixture
 def clean_registry():
-    import decorelate
-    registry = decorelate.get_registry()
+    import decorrelate
+    registry = decorrelate.get_registry()
 
     registry.registered = []
 
 
 def test_register(clean_registry):
-    import decorelate
-    registry = decorelate.get_registry()
+    import decorrelate
+    registry = decorrelate.get_registry()
 
     def func():
         pass
@@ -19,14 +19,14 @@ def test_register(clean_registry):
     def callback():
         pass
 
-    decorelate.register(func, callback)
+    decorrelate.register(func, callback)
 
     assert len(registry) == 1
 
 
 def test_register_with_category(clean_registry):
-    import decorelate
-    registry = decorelate.get_registry()
+    import decorrelate
+    registry = decorrelate.get_registry()
 
     def func():
         pass
@@ -34,20 +34,20 @@ def test_register_with_category(clean_registry):
     def callback():
         pass
 
-    decorelate.register(func, callback, category='test_category')
+    decorrelate.register(func, callback, category='test_category')
 
     assert len(registry) == 1
 
 
 def test_original(clean_registry):
-    import decorelate
-    registry = decorelate.get_registry()
+    import decorrelate
+    registry = decorrelate.get_registry()
 
     def decorator(wrapped):
         def callback(callable):
             callable.wrapped = True
             return callable
-        decorelate.register(wrapped, callback)
+        decorrelate.register(wrapped, callback)
         return wrapped
 
     @decorator
@@ -59,14 +59,14 @@ def test_original(clean_registry):
 
 
 def test_start(clean_registry):
-    import decorelate
-    registry = decorelate.get_registry()
+    import decorrelate
+    registry = decorrelate.get_registry()
 
     def decorator(wrapped):
         def callback(callable):
             callable.wrapped = True
             return callable
-        decorelate.register(wrapped, callback)
+        decorrelate.register(wrapped, callback)
         return wrapped
 
     @decorator
@@ -76,15 +76,15 @@ def test_start(clean_registry):
     assert hasattr(test_func, 'wrapped') is False
     assert len(registry) == 1
 
-    decorelate.start()
+    decorrelate.start()
 
     assert hasattr(test_func, 'wrapped')
     assert len(registry) == 0
 
 
 def test_start_decorator_with_parameter(clean_registry):
-    import decorelate
-    registry = decorelate.get_registry()
+    import decorrelate
+    registry = decorrelate.get_registry()
 
     def decorator(value, **kwargs):
         def wrapper(wrapped):
@@ -94,7 +94,7 @@ def test_start_decorator_with_parameter(clean_registry):
                 for key, val in kwargs.items():
                     setattr(callable, key, val)
                 return callable
-            decorelate.register(wrapped, callback)
+            decorrelate.register(wrapped, callback)
             return wrapped
         return wrapper
 
@@ -109,7 +109,7 @@ def test_start_decorator_with_parameter(clean_registry):
     assert hasattr(test_func, 'three') is False
     assert len(registry) == 1
 
-    decorelate.start()
+    decorrelate.start()
 
     assert hasattr(test_func, 'wrapped')
     assert hasattr(test_func, 'value')
@@ -124,7 +124,7 @@ def test_start_decorator_with_parameter(clean_registry):
 
 
 def test_singleton(clean_registry):
-    import decorelate
+    import decorrelate
 
-    assert decorelate.get_registry() == decorelate.get_registry()
-    assert id(decorelate.get_registry()) == id(decorelate.get_registry())
+    assert decorrelate.get_registry() == decorrelate.get_registry()
+    assert id(decorrelate.get_registry()) == id(decorrelate.get_registry())
