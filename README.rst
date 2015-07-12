@@ -6,7 +6,7 @@ Decorrelate
     :target: https://travis-ci.org/rcommande/decorrelate
 
 
-Sometime, you need to control when your decorators will be actived. For example, in your unit tests, you may want to test the original function and not the decorated function. "Decorrelate" is an helper who help you to perform this task. This is very minimalist. If your needs are complexe, you must look at the `Venusian`_ module or another.
+Sometimes, you need to control when your decorators will be actived. For example, in your unit tests, you may want to test the original function and not the decorated function. "Decorrelate" is an helper who help you to perform this task. This is very minimalist. If your needs are more complicated, you must look at the `Venusian`_ module or another.
 
 Installation
 ++++++++++++
