@@ -30,7 +30,7 @@ def register(func, callback, category='default'):
     registry._registered[category].append((func, callback, ))
 
 
-def start(category=None):
+def activate(category=None):
     registry = get_registry()
     if category is None:
         for callable, callback in registry:

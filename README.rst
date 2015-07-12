@@ -43,11 +43,11 @@ The callback is a simple function that returns the decorated callable and will b
     False
 
 
-At this moment, "a_function" function is not decorated. But now, we want it. We have just to call the **decorrelate.start()** function :
+At this moment, "a_function" function is not decorated. But now, we want it. We have just to call the **decorrelate.activate()** function :
 
 .. code-block:: pycon
 
-   >>> decorrelate.start()
+   >>> decorrelate.activate()
    >>> hasattr(a_function, "wrapped")
    True
    a_function.wrapped
