@@ -6,7 +6,7 @@ def clean_registry():
     import decorrelate
     registry = decorrelate.get_registry()
 
-    registry.registered = []
+    registry._registered = {}
 
 
 def test_register(clean_registry):

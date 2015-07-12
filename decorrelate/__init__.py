@@ -1,13 +1,14 @@
 class Registry(object):
+    _registered = None
 
     def __init__(self):
-        self.registered = []
+        self._registered = {}
 
     def __len__(self):
-        return len(self.registered)
+        return len(list(self.__iter__()))
 
     def __iter__(self):
-        return (item for item in self.registered)
+        return (value for categ in self._registered.values() for value in categ)
 
 
 def singleton():
@@ -24,7 +25,9 @@ get_registry = singleton()
 
 def register(func, callback, category='default'):
     registry = get_registry()
-    registry.registered.append((func, callback, ))
+    if category not in registry._registered:
+        registry._registered[category] = []
+    registry._registered[category].append((func, callback, ))
 
 
 def start():
@@ -32,4 +35,4 @@ def start():
     for callable, callback in registry:
         callback_result = callback(callable)
         callable = callback_result
-    registry.registered = []
+    registry._registered = {}
