@@ -5,9 +5,8 @@ version = '0.1'
 setup(
     name='decorrelate',
     version=version,
-    description="",
-    long_description="""\
-""",
+    description="A simple et (very) light library for defering decorator actions",
+    long_description=open('README.rst', 'r').read(),
     classifiers=[
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
@@ -19,13 +18,11 @@ setup(
     author='Romain Commandé',
     author_email='commande.romain+decorrelate@gmail.com',
     url='http://www.rcomman.de',
-    license='',
+    license='LGPL3',
     packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
     include_package_data=True,
     zip_safe=False,
-    install_requires=[
-        # -*- Extra requirements: -*-
-    ],
+    install_requires=[],
     extras_require={
         "develop": [
             "pytest"
