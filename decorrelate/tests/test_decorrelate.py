@@ -58,7 +58,7 @@ def test_original(clean_registry):
     assert len(registry) == 1
 
 
-def test_activate(clean_registry):
+def test_activates(clean_registry):
     import decorrelate
     registry = decorrelate.get_registry()
 
@@ -76,13 +76,13 @@ def test_activate(clean_registry):
     assert hasattr(test_func, 'wrapped') is False
     assert len(registry) == 1
 
-    decorrelate.activate()
+    decorrelate.activates()
 
     assert hasattr(test_func, 'wrapped')
     assert len(registry) == 0
 
 
-def test_activate_decorator_with_parameter(clean_registry):
+def test_activates_decorator_with_parameter(clean_registry):
     import decorrelate
     registry = decorrelate.get_registry()
 
@@ -109,7 +109,7 @@ def test_activate_decorator_with_parameter(clean_registry):
     assert hasattr(test_func, 'three') is False
     assert len(registry) == 1
 
-    decorrelate.activate()
+    decorrelate.activates()
 
     assert hasattr(test_func, 'wrapped')
     assert hasattr(test_func, 'value')
@@ -123,7 +123,7 @@ def test_activate_decorator_with_parameter(clean_registry):
     assert len(registry) == 0
 
 
-def test_activate_with_category(clean_registry):
+def test_activates_with_category(clean_registry):
     import decorrelate
     registry = decorrelate.get_registry()
 
@@ -152,7 +152,7 @@ def test_activate_with_category(clean_registry):
     assert hasattr(test_func, 'wrapped') is False
     assert len(registry) == 2
 
-    decorrelate.activate(category='a category')
+    decorrelate.activates(category='a category')
 
     assert hasattr(test_func, 'wrapped')
     assert len(registry) == 1
@@ -160,7 +160,7 @@ def test_activate_with_category(clean_registry):
     assert len(registry._registered['a category']) == 0
 
 
-def test_activate_with_same_category(clean_registry):
+def test_activates_with_same_category(clean_registry):
     import decorrelate
     registry = decorrelate.get_registry()
 
@@ -189,7 +189,7 @@ def test_activate_with_same_category(clean_registry):
     assert hasattr(test_func, 'wrapped') is False
     assert len(registry) == 2
 
-    decorrelate.activate(category='a category')
+    decorrelate.activates(category='a category')
 
     assert hasattr(test_func, 'wrapped')
     assert len(registry) == 0

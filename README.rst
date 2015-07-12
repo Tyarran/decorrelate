@@ -1,6 +1,11 @@
 Decorrelate
 ###########
 
+
+.. image:: https://travis-ci.org/rcommande/decorrelate.svg?branch=master
+    :target: https://travis-ci.org/rcommande/decorrelate
+
+
 Sometime, you need to control when your decorators will be actived. For example, in your unit tests, you may want to test the original function and not the decorated function. "Decorrelate" is an helper who help you to perform this task. This is very minimalist. If your needs are complexe, you must look at the `Venusian`_ module or another.
 
 Installation
@@ -43,11 +48,11 @@ The callback is a simple function that returns the decorated callable and will b
     False
 
 
-At this moment, "a_function" function is not decorated. But now, we want it. We have just to call the **decorrelate.activate()** function :
+At this moment, "a_function" function is not decorated. But now, we want it. We have just to call the **decorrelate.activates()** function :
 
 .. code-block:: pycon
 
-   >>> decorrelate.activate()
+   >>> decorrelate.activates()
    >>> hasattr(a_function, "wrapped")
    True
    a_function.wrapped
