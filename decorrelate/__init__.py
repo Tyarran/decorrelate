@@ -30,9 +30,15 @@ def register(func, callback, category='default'):
     registry._registered[category].append((func, callback, ))
 
 
-def start():
+def start(category=None):
     registry = get_registry()
-    for callable, callback in registry:
-        callback_result = callback(callable)
-        callable = callback_result
-    registry._registered = {}
+    if category is None:
+        for callable, callback in registry:
+            callback_result = callback(callable)
+            callable = callback_result
+        registry._registered = {}
+    else:
+        for callable, callback in registry._registered[category]:
+            callback_result = callback(callable)
+            callable = callback_result
+        registry._registered[category] = ()

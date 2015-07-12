@@ -123,6 +123,79 @@ def test_start_decorator_with_parameter(clean_registry):
     assert len(registry) == 0
 
 
+def test_start_with_category(clean_registry):
+    import decorrelate
+    registry = decorrelate.get_registry()
+
+    def decorator(wrapped):
+        def callback(callable):
+            callable.wrapped = True
+            return callable
+        decorrelate.register(wrapped, callback, category='a category')
+        return wrapped
+
+    def decorator2(wrapped):
+        def callback(callable):
+            callable.wrapped = True
+            return callable
+        decorrelate.register(wrapped, callback)
+        return wrapped
+
+    @decorator
+    def test_func():
+        pass
+
+    @decorator2
+    def test_func2():
+        pass
+
+    assert hasattr(test_func, 'wrapped') is False
+    assert len(registry) == 2
+
+    decorrelate.start(category='a category')
+
+    assert hasattr(test_func, 'wrapped')
+    assert len(registry) == 1
+    assert len(registry._registered['default']) == 1
+    assert len(registry._registered['a category']) == 0
+
+
+def test_start_with_same_category(clean_registry):
+    import decorrelate
+    registry = decorrelate.get_registry()
+
+    def decorator(wrapped):
+        def callback(callable):
+            callable.wrapped = True
+            return callable
+        decorrelate.register(wrapped, callback, category='a category')
+        return wrapped
+
+    def decorator2(wrapped):
+        def callback(callable):
+            callable.wrapped = True
+            return callable
+        decorrelate.register(wrapped, callback, category='a category')
+        return wrapped
+
+    @decorator
+    def test_func():
+        pass
+
+    @decorator2
+    def test_func2():
+        pass
+
+    assert hasattr(test_func, 'wrapped') is False
+    assert len(registry) == 2
+
+    decorrelate.start(category='a category')
+
+    assert hasattr(test_func, 'wrapped')
+    assert len(registry) == 0
+    assert len(registry._registered['a category']) == 0
+
+
 def test_singleton(clean_registry):
     import decorrelate
 
