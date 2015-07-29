@@ -9,7 +9,7 @@ def clean_registry():
     registry._registered = {}
 
 
-def test_register(clean_registry):
+def test_get_proxy(clean_registry):
     import decorrelate
     registry = decorrelate.get_registry()
 
@@ -19,12 +19,12 @@ def test_register(clean_registry):
     def callback():
         pass
 
-    decorrelate.register(func, callback)
+    decorrelate.get_proxy(func, callback)
 
     assert len(registry) == 1
 
 
-def test_register_with_category(clean_registry):
+def test_get_proxy_with_category(clean_registry):
     import decorrelate
     registry = decorrelate.get_registry()
 
@@ -34,7 +34,7 @@ def test_register_with_category(clean_registry):
     def callback():
         pass
 
-    decorrelate.register(func, callback, category='test_category')
+    decorrelate.get_proxy(func, callback, category='test_category')
 
     assert len(registry) == 1
 
@@ -47,7 +47,7 @@ def test_original(clean_registry):
         def callback(callable):
             callable.wrapped = True
             return callable
-        decorrelate.register(wrapped, callback)
+        decorrelate.get_proxy(wrapped, callback)
         return wrapped
 
     @decorator
@@ -66,7 +66,7 @@ def test_activates(clean_registry):
         def callback(callable):
             callable.wrapped = True
             return callable
-        return decorrelate.register(wrapped, callback)
+        return decorrelate.get_proxy(wrapped, callback)
 
     @decorator
     def test_func():
@@ -89,7 +89,7 @@ def test_activates_proxy_attributes(clean_registry):
             callable.wrapped = True
             callable.__doc__ = 'A test function after wrapping'
             return callable
-        return decorrelate.register(wrapped, callback)
+        return decorrelate.get_proxy(wrapped, callback)
 
     @decorator
     def test_func():
@@ -121,7 +121,7 @@ def test_activates_decorator_with_parameter(clean_registry):
                 for key, val in kwargs.items():
                     setattr(callable, key, val)
                 return callable
-            decorrelate.register(wrapped, callback)
+            decorrelate.get_proxy(wrapped, callback)
             return wrapped
         return wrapper
 
@@ -158,14 +158,14 @@ def test_activates_with_category(clean_registry):
         def callback(callable):
             callable.wrapped = True
             return callable
-        decorrelate.register(wrapped, callback, category='a category')
+        decorrelate.get_proxy(wrapped, callback, category='a category')
         return wrapped
 
     def decorator2(wrapped):
         def callback(callable):
             callable.wrapped = True
             return callable
-        decorrelate.register(wrapped, callback)
+        decorrelate.get_proxy(wrapped, callback)
         return wrapped
 
     @decorator
@@ -195,14 +195,14 @@ def test_activates_with_same_category(clean_registry):
         def callback(callable):
             callable.wrapped = True
             return callable
-        decorrelate.register(wrapped, callback, category='a category')
+        decorrelate.get_proxy(wrapped, callback, category='a category')
         return wrapped
 
     def decorator2(wrapped):
         def callback(callable):
             callable.wrapped = True
             return callable
-        decorrelate.register(wrapped, callback, category='a category')
+        decorrelate.get_proxy(wrapped, callback, category='a category')
         return wrapped
 
     @decorator

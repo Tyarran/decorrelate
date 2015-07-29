@@ -14,19 +14,10 @@ class Registry(object):
         return (value for categ in self._registered.values() for value in categ)
 
 
-def singleton():
-    registry = Registry()
-
-    def return_the_registry():
-        return registry
-
-    return return_the_registry
-
-
-get_registry = singleton()
-
-
 class Proxy(object):
+    """Represents a callable proxy.
+    Replaces the original callable and redirects to this callable or to the wrapped (decorated) callable if the proxy
+     is activated or not"""
     _func = None
     _callback = None
 
@@ -50,7 +41,20 @@ class Proxy(object):
         return repr(self._func)
 
 
-def register(func, callback, category='default'):
+def singleton():
+    """Get a function who returns the unique instance of the registry"""
+    registry = Registry()
+
+    def return_the_registry():
+        return registry
+
+    return return_the_registry
+
+
+get_registry = singleton()
+
+
+def get_proxy(func, callback, category='default'):
     registry = get_registry()
     proxy = Proxy(func, callback)
     proxy = functools.wraps(func)(proxy)
