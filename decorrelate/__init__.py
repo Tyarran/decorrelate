@@ -1,3 +1,6 @@
+import functools
+
+
 class Registry(object):
     _registered = None
 
@@ -14,31 +17,59 @@ class Registry(object):
 def singleton():
     registry = Registry()
 
-    def get_registry():
+    def return_the_registry():
         return registry
 
-    return get_registry
+    return return_the_registry
 
 
 get_registry = singleton()
 
 
+class Proxy(object):
+    _func = None
+    _callback = None
+
+    def __init__(self, func, callback):
+        self._func = func
+        self._callback = callback
+
+    def __call__(self, *args, **kwargs):
+        return self._func(*args, **kwargs)
+
+    @property
+    def __dict__(self):
+        result = dict(self._func.__dict__)
+        result.update({'_func': self._func, '_callback': self._callback})
+        return result
+
+    def __getattr__(self, attribute):
+        return getattr(self._func, attribute)
+
+    def __repr__(self):
+        return repr(self._func)
+
+
 def register(func, callback, category='default'):
     registry = get_registry()
+    proxy = Proxy(func, callback)
+    proxy = functools.wraps(func)(proxy)
     if category not in registry._registered:
         registry._registered[category] = []
-    registry._registered[category].append((func, callback, ))
+    registry._registered[category].append(proxy)
+    return proxy
 
 
 def activates(category=None):
     registry = get_registry()
-    if category is None:
-        for callable, callback in registry:
-            callback_result = callback(callable)
-            callable = callback_result
-        registry._registered = {}
-    else:
-        for callable, callback in registry._registered[category]:
-            callback_result = callback(callable)
-            callable = callback_result
-        registry._registered[category] = ()
+    proxys = (proxy
+              for key, values in registry._registered.items()
+              for proxy in values
+              if category is None or category == key)
+    for proxy in proxys:
+        proxy._func = proxy._callback(proxy._func)
+        proxy = functools.wraps(proxy._func)(proxy)
+        if category is None:
+            registry._registered = {}
+        else:
+            registry._registered[category] = ()

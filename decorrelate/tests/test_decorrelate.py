@@ -66,8 +66,7 @@ def test_activates(clean_registry):
         def callback(callable):
             callable.wrapped = True
             return callable
-        decorrelate.register(wrapped, callback)
-        return wrapped
+        return decorrelate.register(wrapped, callback)
 
     @decorator
     def test_func():
@@ -80,6 +79,34 @@ def test_activates(clean_registry):
 
     assert hasattr(test_func, 'wrapped')
     assert len(registry) == 0
+
+
+def test_activates_proxy_attributes(clean_registry):
+    import decorrelate
+
+    def decorator(wrapped):
+        def callback(callable):
+            callable.wrapped = True
+            callable.__doc__ = 'A test function after wrapping'
+            return callable
+        return decorrelate.register(wrapped, callback)
+
+    @decorator
+    def test_func():
+        """A test function"""
+        pass
+
+    assert test_func.__doc__ == 'A test function'
+    assert isinstance(test_func, decorrelate.Proxy)
+    assert test_func.__name__ == 'test_func'
+    assert not repr(test_func).startswith('<decorrelate.Proxy object')
+
+    decorrelate.activates()
+
+    assert test_func.__doc__ == 'A test function after wrapping'
+    assert isinstance(test_func, decorrelate.Proxy)
+    assert test_func.__name__ == 'test_func'
+    assert not repr(test_func).startswith('<decorrelate.Proxy object')
 
 
 def test_activates_decorator_with_parameter(clean_registry):
