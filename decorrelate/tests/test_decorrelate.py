@@ -47,8 +47,7 @@ def test_original(clean_registry):
         def callback(callable):
             callable.wrapped = True
             return callable
-        decorrelate.get_proxy(wrapped, callback)
-        return wrapped
+        return decorrelate.get_proxy(wrapped, callback)
 
     @decorator
     def test_func():
@@ -121,8 +120,7 @@ def test_activates_decorator_with_parameter(clean_registry):
                 for key, val in kwargs.items():
                     setattr(callable, key, val)
                 return callable
-            decorrelate.get_proxy(wrapped, callback)
-            return wrapped
+            return decorrelate.get_proxy(wrapped, callback)
         return wrapper
 
     @decorator('My value', one=1, two=2, three=3)
@@ -158,15 +156,13 @@ def test_activates_with_category(clean_registry):
         def callback(callable):
             callable.wrapped = True
             return callable
-        decorrelate.get_proxy(wrapped, callback, category='a category')
-        return wrapped
+        return decorrelate.get_proxy(wrapped, callback, category='a category')
 
     def decorator2(wrapped):
         def callback(callable):
             callable.wrapped = True
             return callable
-        decorrelate.get_proxy(wrapped, callback)
-        return wrapped
+        return decorrelate.get_proxy(wrapped, callback)
 
     @decorator
     def test_func():
@@ -195,15 +191,13 @@ def test_activates_with_same_category(clean_registry):
         def callback(callable):
             callable.wrapped = True
             return callable
-        decorrelate.get_proxy(wrapped, callback, category='a category')
-        return wrapped
+        return decorrelate.get_proxy(wrapped, callback, category='a category')
 
     def decorator2(wrapped):
         def callback(callable):
             callable.wrapped = True
             return callable
-        decorrelate.get_proxy(wrapped, callback, category='a category')
-        return wrapped
+        return decorrelate.get_proxy(wrapped, callback, category='a category')
 
     @decorator
     def test_func():
