@@ -18,27 +18,27 @@ class Proxy(object):
     """Represents a callable proxy.
     Replaces the original callable and redirects to this callable or to the wrapped (decorated) callable if the proxy
      is activated or not"""
-    _func = None
+    _callable = None
     _callback = None
 
-    def __init__(self, func, callback):
-        self._func = func
+    def __init__(self, callable, callback):
+        self._callable = callable
         self._callback = callback
 
     def __call__(self, *args, **kwargs):
-        return self._func(*args, **kwargs)
+        return self._callable(*args, **kwargs)
 
     @property
     def __dict__(self):
-        result = dict(self._func.__dict__)
-        result.update({'_func': self._func, '_callback': self._callback})
+        result = dict(self._callable.__dict__)
+        result.update({'_callable': self._callable, '_callback': self._callback})
         return result
 
     def __getattr__(self, attribute):
-        return getattr(self._func, attribute)
+        return getattr(self._callable, attribute)
 
     def __repr__(self):
-        return repr(self._func)
+        return repr(self._callable)
 
 
 def singleton():
@@ -71,8 +71,8 @@ def activates(category=None):
               for proxy in values
               if category is None or category == key)
     for proxy in proxys:
-        proxy._func = proxy._callback(proxy._func)
-        proxy = functools.wraps(proxy._func)(proxy)
+        proxy._callable = proxy._callback(proxy._callable)
+        proxy = functools.wraps(proxy._callable)(proxy)
         if category is None:
             registry._registered = {}
         else:

@@ -1,12 +1,15 @@
 import pytest
+import sys
 
 
 @pytest.fixture
 def clean_registry():
     import decorrelate
     registry = decorrelate.get_registry()
-
     registry._registered = {}
+    ressources_module_name = 'decorrelate.tests.ressources'
+    if ressources_module_name in sys.modules:
+        del sys.modules[ressources_module_name]
 
 
 def test_get_proxy(clean_registry):
@@ -222,3 +225,99 @@ def test_singleton(clean_registry):
 
     assert decorrelate.get_registry() == decorrelate.get_registry()
     assert id(decorrelate.get_registry()) == id(decorrelate.get_registry())
+
+
+def test_decorrate_a_function(clean_registry):
+    import decorrelate
+
+    def decorator(wrapped):
+        def callback(callable):
+            callable.wrapped = True
+            return callable
+        return decorrelate.get_proxy(wrapped, callback)
+
+    @decorator
+    def a_test_function():
+        pass
+
+    assert hasattr(a_test_function, 'wrapped') is False
+    decorrelate.activates()
+    assert hasattr(a_test_function, 'wrapped')
+
+
+def test_decorrate_a_function_from_another_module(clean_registry):
+    import decorrelate
+    from decorrelate.tests.ressources import a_test_function
+
+    assert hasattr(a_test_function, 'wrapped') is False
+    decorrelate.activates()
+    assert hasattr(a_test_function, 'wrapped')
+
+
+def test_decorrate_a_class(clean_registry):
+    import decorrelate
+
+    def decorator(wrapped):
+        def callback(callable):
+            callable.wrapped = True
+            return callable
+        return decorrelate.get_proxy(wrapped, callback)
+
+    @decorator
+    class ATestClass(object):
+
+        def __init__(self, *args, **kwargs):
+            pass
+
+        def __call__(self):
+            pass
+
+    assert hasattr(ATestClass(), 'wrapped') is False
+    assert repr(ATestClass) == repr(ATestClass._callable)
+    decorrelate.activates()
+    assert hasattr(ATestClass(), 'wrapped')
+
+
+def test_decorrate_a_class_from_another_module(clean_registry):
+    import decorrelate
+    from decorrelate.tests.ressources import ATestClass
+
+    assert hasattr(ATestClass(), 'wrapped') is False
+    assert repr(ATestClass) == repr(ATestClass._callable)
+    decorrelate.activates()
+    assert hasattr(ATestClass(), 'wrapped')
+
+
+def test_decorrate_a_method(clean_registry):
+    import decorrelate
+
+    def decorator(wrapped):
+        def callback(callable):
+            callable.wrapped = True
+            return callable
+        return decorrelate.get_proxy(wrapped, callback)
+
+    class ATestClass(object):
+
+        def __init__(self, *args, **kwargs):
+            pass
+
+        @decorator
+        def a_test_method(self):
+            pass
+
+        def __call__(self):
+            pass
+
+    assert hasattr(ATestClass().a_test_method, 'wrapped') is False
+    decorrelate.activates()
+    assert hasattr(ATestClass().a_test_method, 'wrapped')
+
+
+def test_decorrate_a_method_from_another_module(clean_registry):
+    import decorrelate
+    from decorrelate.tests.ressources import ATestClassWithDecoratedMethod
+
+    assert hasattr(ATestClassWithDecoratedMethod().a_test_method, 'wrapped') is False
+    decorrelate.activates()
+    assert hasattr(ATestClassWithDecoratedMethod().a_test_method, 'wrapped')
